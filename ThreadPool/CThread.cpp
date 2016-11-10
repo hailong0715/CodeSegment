@@ -21,18 +21,19 @@ void CThread::Run()
 {
 	for(; ; )
 	{
-	
+		m_th_notify->Lock();
 		if(m_task_list.empty())
 		{
-			cout<<"task list is empty"<<endl;
+			cout<<"thread " <<m_thread_id <<" task list is empty\n";
 			m_th_notify->Wait();
 		}
-		m_th_notify->Lock();
+		
 		CTask* pTask = m_task_list.front();
-		pTask->Run();
-		m_th_notify->UnLock();
-		m_task_cnt--;
 		cout<<"Thread "<<m_thread_id<<" run Task "<<pTask->GetTaskId()<<endl;
+		pTask->Run();
+		m_task_list.pop_front(); //任务处理完成后退出队列
+		m_task_cnt--;
+		m_th_notify->UnLock();
 		delete pTask;
 	}
 }
@@ -48,6 +49,6 @@ bool CThread::AddTask(CTask* pTask)
 	m_th_notify->Lock();
 	m_task_list.push_back(pTask);
 	m_th_notify->Signal();
+	cout<<"Push Task taskId:"<<pTask->GetTaskId()<<" into thread: "<<m_thread_id<<endl;
 	m_th_notify->UnLock();
-	cout<<"Push Task taskId:"<<pTask->GetTaskId()<<" into thread threadId:"<<m_thread_id<<endl;
 }

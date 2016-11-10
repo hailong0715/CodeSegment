@@ -11,5 +11,5 @@ CTask::~CTask()
 
 void CTask::Run()
 {
-	cout<<"task:"<<m_task_id<<"do Some Work"<<endl;
+	cout<<"task:"<<m_task_id<<" do Some Work"<<endl;
 }
