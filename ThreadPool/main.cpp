@@ -2,8 +2,8 @@
 #include <unistd.h>
 int main()
 {
-	ThreadPool* pTheadPool = new ThreadPool(5);
-	pTheadPool->Init();
+	ThreadPool* pTheadPool = ThreadPool::GetInstace();
+	pTheadPool->Init(5);
 	for(int i=0; i<20; i++)
 	{
 		CTask* pTask = new CTask(i);

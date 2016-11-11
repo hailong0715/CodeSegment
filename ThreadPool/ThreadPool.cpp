@@ -1,23 +1,23 @@
 #include "ThreadPool.h"
 #include <iostream>
 #include <cstdlib>
+
+ThreadPool* ThreadPool::m_pThreadPool = NULL;
 using namespace std;
+
+
 ThreadPool::ThreadPool()
 {
 	m_thread_size = 10;
 }
 
-ThreadPool::ThreadPool(unsigned int size)
-{
-	m_thread_size = size;
-}
-
 ThreadPool::~ThreadPool()
 {}
 
-int ThreadPool::Init()
+int ThreadPool::Init(U32 thread_num)
 {
-	m_pWorkThread = new CThread[m_thread_size];
+	m_thread_size = thread_num;
+	m_pWorkThread = new CThread[thread_num];
 	if(!m_pWorkThread)
 		return 1;
 	for(int i=0; i<m_thread_size; i++)
@@ -38,4 +38,12 @@ void ThreadPool::AddTask(CTask * pTask)
 {
 	unsigned int index = random()%m_thread_size;
 	m_pWorkThread[index].AddTask(pTask);
+}
+
+ThreadPool* ThreadPool::GetInstace()
+{
+	if(!m_pThreadPool)
+		m_pThreadPool = new ThreadPool();
+	return m_pThreadPool;
+	
 }
