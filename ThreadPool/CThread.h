@@ -12,6 +12,7 @@ public:
     void UnLock(){pthread_mutex_unlock(&m_mutex);}
     void Wait() { pthread_cond_wait(&m_con,&m_mutex); }
     void Signal() {pthread_cond_signal(&m_con); }
+    void Broadcast() { pthread_cond_broadcast(&m_con);}
 private:    
     pthread_mutex_t m_mutex;
     pthread_mutexattr_t m_mutex_attr;

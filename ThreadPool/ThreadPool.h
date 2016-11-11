@@ -14,7 +14,7 @@ public:
 private:
     ThreadPool();
     static ThreadPool* m_pThreadPool;
-    unsigned int m_thread_size;
+    U32 m_thread_size;
     CThread* m_pWorkThread;
 };
 #endif
