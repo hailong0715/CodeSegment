@@ -1,4 +1,4 @@
-#include "ThreadPool.h"
+#include "CThread.h"
 #include <unistd.h>
 int main()
 {

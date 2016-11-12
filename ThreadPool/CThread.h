@@ -1,6 +1,8 @@
+#ifndef CTHREAD_H_
+#define CTHREAD_H_
 #include <pthread.h>
-#include <list>
 #include "CTask.h"
+#include <list>
 typedef unsigned int U32;
 
 class CThreadNotify
@@ -32,6 +34,28 @@ public:
 private:
     pthread_t m_thread_id;
     unsigned int m_task_cnt;
-    std::list<CTask*> m_task_list; 
     CThreadNotify* m_th_notify;
 };
+
+class ThreadPool
+{
+public:
+
+   virtual ~ThreadPool();
+    int Init(U32 thread_num);
+    void Destory();
+    void AddTask(CTask* pTask);
+    static ThreadPool* GetInstace();
+    bool IsEmpty()
+    {
+        return m_task_list.empty();
+    }
+    std::list<CTask*> m_task_list;    
+private:
+    ThreadPool();
+    static ThreadPool* m_pThreadPool;
+    U32 m_thread_size;
+    CThread* m_pWorkThread;
+};
+
+#endif

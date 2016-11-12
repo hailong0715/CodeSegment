@@ -1,4 +1,4 @@
-#include "ThreadPool.h"
+#include "CThread.h"
 #include <iostream>
 #include <cstdlib>
 
@@ -36,8 +36,7 @@ void ThreadPool::Destory()
 
 void ThreadPool::AddTask(CTask * pTask)
 {
-	unsigned int index = random()%m_thread_size;
-	m_pWorkThread[index].AddTask(pTask);
+	m_task_list.push_back(pTask);
 }
 
 ThreadPool* ThreadPool::GetInstace()
