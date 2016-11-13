@@ -13,5 +13,5 @@ CTask::~CTask()
 void CTask::Run()
 {
 	cout<<"task:"<<m_task_id<<" do Some Work"<<endl;
-	usleep(50*1000);
+	sleep(1);
 }

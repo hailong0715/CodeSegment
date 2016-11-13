@@ -43,7 +43,7 @@ void CThread::Run()
 		CTask* pTask = task_list.front();
 		task_list.pop_front(); 
 		ThreadPool::GetInstace()->UnLock();
-		cout<<"Thread "<<m_thread_id<<" run Task "<<pTask->GetTaskId()<<endl;
+		cout<<"Thread "<<pthread_self()<<" run Task "<<pTask->GetTaskId()<<endl;
 		pTask->Run();
 		m_task_cnt--;
 		delete pTask;

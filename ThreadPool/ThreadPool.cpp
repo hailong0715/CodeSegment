@@ -39,7 +39,7 @@ void ThreadPool::AddTask(CTask * pTask)
 	Lock();
 	m_task_list.push_back(pTask);
 	UnLock();
-	BroadCast();
+	Signal();
 }
 
 ThreadPool* ThreadPool::GetInstace()
