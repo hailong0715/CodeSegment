@@ -36,7 +36,10 @@ void ThreadPool::Destory()
 
 void ThreadPool::AddTask(CTask * pTask)
 {
+	Lock();
 	m_task_list.push_back(pTask);
+	UnLock();
+	BroadCast();
 }
 
 ThreadPool* ThreadPool::GetInstace()

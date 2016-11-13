@@ -8,8 +8,8 @@ typedef unsigned int U32;
 class CThreadNotify
 {
 public:
-    CThreadNotify(){};
-    ~CThreadNotify(){};
+    CThreadNotify();
+    ~CThreadNotify();
     void Lock(){pthread_mutex_lock(&m_mutex);}
     void UnLock(){pthread_mutex_unlock(&m_mutex);}
     void Wait() { pthread_cond_wait(&m_con,&m_mutex); }
@@ -29,12 +29,10 @@ public:
      ~CThread();
     void Start();
      void Run();
-    bool AddTask(CTask* pTask);
    static void* StartRoutine(void* arg);
 private:
     pthread_t m_thread_id;
     unsigned int m_task_cnt;
-    CThreadNotify* m_th_notify;
 };
 
 class ThreadPool
@@ -45,17 +43,29 @@ public:
     int Init(U32 thread_num);
     void Destory();
     void AddTask(CTask* pTask);
+    void Lock() {m_thread_notify.Lock(); }
+    void UnLock() { m_thread_notify.UnLock();}
+    void Signal() { m_thread_notify.Signal(); }
+    void BroadCast(){m_thread_notify.Broadcast();}
+    void Wait() {m_thread_notify.Wait(); }
+    std::list<CTask*>& GetTaskList(){ return m_task_list;}
     static ThreadPool* GetInstace();
     bool IsEmpty()
     {
-        return m_task_list.empty();
-    }
-    std::list<CTask*> m_task_list;    
+        Lock();
+        bool ret = m_task_list.empty();
+        UnLock();
+        return ret;
+        
+    } 
+    
 private:
     ThreadPool();
+    CThreadNotify m_thread_notify;
     static ThreadPool* m_pThreadPool;
     U32 m_thread_size;
     CThread* m_pWorkThread;
+    std::list<CTask*> m_task_list;  
 };
 
 #endif

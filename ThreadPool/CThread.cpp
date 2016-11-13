@@ -1,16 +1,26 @@
 #include "CThread.h"
 #include <iostream>
 using namespace std;
+
+CThreadNotify::CThreadNotify()
+{
+	pthread_mutex_init(&m_mutex, NULL);
+	pthread_cond_init(&m_con, NULL);
+}
+
+CThreadNotify::~CThreadNotify()
+{
+	pthread_mutex_destroy(&m_mutex);
+	pthread_cond_destroy(&m_con);
+}
 CThread::CThread()
 {
 	m_thread_id = 0;
-	m_th_notify = new CThreadNotify();
 }
 
 CThread::~CThread()
 {
-	if(m_th_notify)
-		delete m_th_notify;
+
 }
 
 void CThread::Start()
@@ -19,21 +29,23 @@ void CThread::Start()
 }
 void CThread::Run()
 {
+
 	for(; ; )
 	{
-		m_th_notify->Lock();
 		if(ThreadPool::GetInstace()->IsEmpty())
 		{
 			cout<<"thread " <<m_thread_id <<" task list is empty\n";
-			m_th_notify->Wait();
+			ThreadPool::GetInstace()->Wait();
 		}
-		
-		CTask* pTask = ThreadPool::GetInstace()->m_task_list.front();
+
+		ThreadPool::GetInstace()->Lock();
+		std::list<CTask*>& task_list = ThreadPool::GetInstace()->GetTaskList();
+		CTask* pTask = task_list.front();
+		task_list.pop_front(); 
+		ThreadPool::GetInstace()->UnLock();
 		cout<<"Thread "<<m_thread_id<<" run Task "<<pTask->GetTaskId()<<endl;
 		pTask->Run();
-		ThreadPool::GetInstace()->m_task_list.pop_front(); //任务处理完成后退出队列
 		m_task_cnt--;
-		m_th_notify->UnLock();
 		delete pTask;
 	}
 }
@@ -44,10 +56,3 @@ void* CThread::StartRoutine(void * arg)
 	pThread->Run();
 }
 
-bool CThread::AddTask(CTask* pTask)
-{
-	m_th_notify->Lock();
-	ThreadPool::GetInstace()->AddTask(pTask);
-	m_th_notify->UnLock();
-	return true;
-}
