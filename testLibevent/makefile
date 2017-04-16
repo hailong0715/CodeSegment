@@ -1,5 +1,4 @@
-test:main.cpp
-	gcc -g -o  test main.cpp -levent
-	
+select:event.cpp
+	gcc -ggdb -o  event event.cpp -levent
 clean:
-	rm -f main.o test
+	rm -f event event.o
